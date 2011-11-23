@@ -16,7 +16,7 @@ Y = (ymin, ymax) = (2.0, 4.0)
 window_width = 600
 
 # accuracy
-limes_precision = 0.01
+limes_precision = 0.05
 N_max = 10000
 
 def sign( x ):
