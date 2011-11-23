@@ -8,8 +8,8 @@ import tools.window as window
 
 # fractal parameters
 S = "AABAB"
-X = (xmin, xmax) = (2.0001, 4.0)
-Y = (ymin, ymax) = (2.0001, 4.0)
+X = (xmin, xmax) = (2.0, 4.0)
+Y = (ymin, ymax) = (2.0, 4.0)
 
 # default window size
 # height set automatically
