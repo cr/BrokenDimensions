@@ -23,11 +23,13 @@ def sign( x ):
 	return 1.0 if x>=0 else -1.0
 
 def color( x ):
+	if x > 0.75:
+		return (255,255,255)
 	if x > -1.0:
-		c = int( ( x + 1.0 ) / 2 * 255 )
+		c = int( ( x + 1.0 ) / 1.75 * 255 )
 		return (255,c,c)
 	if x > -4.0:
-		c = int( ( x + 4.0 ) / 3 * 255 )
+		c = int( ( x + 4.0 ) / 3.0 * 255 )
 		return (c,0,0)
 	else:
 		return (0,0,0)
