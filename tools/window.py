@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import pygame
+import random
 
 class Window( object ):
 
@@ -53,4 +54,10 @@ class Window( object ):
 				mx += self.xstep
 			my += self.ystep
 		raise StopIteration
+
+	def random( self ):
+		arr = [ x for x in self ]
+		while arr:
+			pos = int( random.random() * len( arr ) )
+			yield arr.pop( pos )
 
