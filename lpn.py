@@ -13,7 +13,7 @@ Y = (ymin, ymax) = (2.0, 4.0)
 
 # default window size
 # height set automatically
-window_width = 600
+window_width = 200
 
 # accuracy
 limes_precision = 0.05
@@ -52,7 +52,7 @@ def L_exp( a, b ):
 		if fa > 0:
 			diff = math.log( fa )
 		else:
-			diff = -100.0
+			diff = -40.0
 
 		sum += diff
 		if math.fabs( diff/n ) < limes_precision:
@@ -63,18 +63,25 @@ def L_exp( a, b ):
 
 win = window.Window( window_width, 1.0, xmin, xmax, ymin )
 
-for (pixel, coord) in win:
+n = 0
+for (pixel, coord) in win.random():
 
-	e = L_exp( coord[0], coord[1] )
+	e = L_exp( *coord )
 	win.plot( pixel, color(e) )
 
-	if win.quit():
-		sys.exit( 0 )
+	if n%50 == 0:
+		if win.quit():
+			sys.exit( 0 )
 
 	if pixel[0] == window_width - 1:
 		win.update()
 
+	#if n % 200 == 0:
+	#	win.update()
+	n += 1
+
 win.update()
+print "Done"
 
 while 1:
 	if win.quit():
