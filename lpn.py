@@ -6,6 +6,7 @@ import sys
 from time import sleep
 import math
 import tools.window as window
+from threading import Thread
 
 # fractal parameters
 S = "AABAB"
@@ -75,20 +76,32 @@ def L_exp( a, b ):
 	
 	return sum/n
 
+def render_window( win ):
+	n = 0
+	for (pixel, coord) in win.random():
+
+		e = L_exp( *coord )
+		win.plot( pixel, color(e) )
+
+class Render( Thread ):
+	def __init__( self, window ):
+		Thread.__init__( self )
+		self.window = window
+
+	def run( self ):
+		render_window( self.window )
+
+
 win = window.Window( window_width, window_aspect, (xmin, ymin), (xmax, ymax) )
 
-n = 0
-for (pixel, coord) in win.random():
+job = Render( win )
+job.start()
 
-	e = L_exp( *coord )
-	win.plot( pixel, color(e) )
-
-	if n%20 == 0:
-		win.update( 10.0 )
-		if win.quit():
-			sys.exit( 0 )
-
-	n += 1
+while job.is_alive():
+	sleep( 0.05 )
+	win.update( 10.0 )
+	if win.quit():
+		sys.exit( 1 )
 
 win.update( 1000.0 )
 print >>sys.stderr, "Done"
