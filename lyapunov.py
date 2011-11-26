@@ -7,6 +7,7 @@ from time import sleep
 import math
 import tools.window as window
 from threading import Thread
+import signal
 
 # fractal parameters
 S = "AABAB"
@@ -76,42 +77,125 @@ def L_exp( a, b ):
 	
 	return sum/n
 
-def render_window( win ):
-	n = 0
-	for (pixel, coord) in win.random():
-
-		e = L_exp( *coord )
-		win.plot( pixel, color(e) )
-
 class Render( Thread ):
+
 	def __init__( self, window ):
+		#super(Thread, self).__init__()
 		Thread.__init__( self )
 		self.window = window
+		self._stop = False
 
 	def run( self ):
-		render_window( self.window )
+		self.render_window()
 
+	def stop( self ):
+		self._stop = True
 
-win = window.Window( window_width, window_aspect, (xmin, ymin), (xmax, ymax) )
+	def finish( self ):
+		self.stop()
+		self.join()
 
-job = Render( win )
-job.start()
+	def render_window( self ):
+		for (pixel, coord) in self.window if not render_random else self.window.random():
+			e = L_exp( *coord )
+			self.window.plot( pixel, color(e) )
+			if self._stop:
+				return
 
-while job.is_alive():
-	sleep( 0.05 )
-	win.update( 10.0 )
-	if win.quit():
+def quit_handler( signal, frame ):
+	if job:
+		job.finish()
+	sys.exit( 0 )
+
+signal.signal( signal.SIGINT, quit_handler )
+
+render_random = True
+state = 'resize'
+win = False
+job = False
+
+while True:
+
+	if state == 'resize':
+		if job:
+			job.finish()
+		win = window.Window( window_width, window_aspect, (xmin, ymin), (xmax, ymax) )
+		state = 'render'
+	elif state == 'render':
+		job = Render( win )
+		job.start()
+		state = 'rendering'
+	elif state == 'rendering':
+		if not job.is_alive():
+			state = 'idle'
+	elif state == 'idle':
+		job = False
+	elif state == 'quit':
+		if job:
+			job.finish()
 		sys.exit( 1 )
 
-win.update( 1000.0 )
-print >>sys.stderr, "Done"
+	if win:
 
-bmp = '/tmp/lyapunov.bmp'
-win.saveBMP( bmp )
-print >>sys.stderr, 'Saved to', bmp
+		win.poll()
 
-while 1:
-	sleep(0.1)
-	if win.quit():
-		break
+		if win.quit():
+			state = 'quit'
+
+		key = win.key_press()
+		if key == u'e':
+			limes_precision /= 1.1
+			print 'limes precision:', limes_precision
+			state = 'resize'
+		if key == u'E':
+			limes_precision *= 1.1
+			print 'limes precision:', limes_precision
+			state = 'resize'
+		if key == u'n':
+			N_min -= 1
+			print 'N min:', N_min
+			state = 'resize'
+		if key == u'N':
+			N_min +=1
+			print 'N min:', N_min
+			state = 'resize'
+		if key == u'r':
+			render_random = not render_random
+			state = 'resize'
+		if key == u'a':
+			(xmin, ymin) = (0.0, 0.0)
+			(xmax, ymax) = (4.0, 4.0)
+			state = 'resize'
+		if key == u'+':
+			window_width *= 1.1
+			state = 'resize'
+		elif key == u'-':
+			window_width /= 1.1
+			state = 'resize'
+		elif key == u'q':
+			state = 'quit'
+		elif key == u's':
+			bmp = '/tmp/lyapunov.bmp'
+			print >>sys.stderr, 'Saving to', bmp, '...'
+			win.saveBMP( bmp )
+			print >>sys.stderr, 'done.'
+
+		mouse_button = win.mouse_press()
+		if mouse_button == 1:
+			(xmin,ymin) = win.mouse_coordinate()
+			state = 'resize'
+		elif mouse_button == 3:
+			(xmax,ymax) = win.mouse_coordinate()
+			state = 'resize'
+
+		mouse_pos = win.mouse_move()
+		if mouse_pos:
+			print win.coordinate( mouse_pos )
+
+		if state == 'rendering':
+			win.update( 10.0 )
+		else:
+			win.update( 1.0 )
+
+	sleep( 0.05 )
 

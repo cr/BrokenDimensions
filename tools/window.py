@@ -31,6 +31,7 @@ class Window( object ):
 		self.update()
 
 		self.button_status = ( False, False, False )
+		self.event = pygame.event.poll()
 
 	def plot( self, pixel, rgb = (1.0, 1.0, 1.0) ):
 		self.surface.set_at( pixel, rgb )
@@ -50,8 +51,7 @@ class Window( object ):
 		return ( int( (coord[0]-self.xmin)/self.xstep ), int( (coord[1]-self.ymin)/self.ystep ) )
 
 	def quit( self ):
-		event = pygame.event.poll()
-		return event.type == pygame.QUIT
+		return self.event.type == pygame.QUIT
 
 	def __iter__( self ):
 		my = self.ymin
@@ -69,6 +69,16 @@ class Window( object ):
 			pos = int( random.random() * len( arr ) )
 			yield arr.pop( pos )
 
+	def invert( self, (xmin,ymin), (xmax,ymax) ):
+		self.surface.lock()
+
+		for x in xrange(xmin,xmax):
+			for y in xrange(ymin,ymax):
+				c = self.surface.get_at((x,y))
+				self.surface.set_at((x,y),(255-c[0],255-c[1],255-c[2],c[3]))
+
+		self.surface.unlock()
+
 	def saveBMP( self, name = '/tmp/window.bmp' ):
 		width = self.surface.get_width()
 		height = self.surface.get_height()
@@ -84,4 +94,35 @@ class Window( object ):
 
 		self.surface.unlock()
 		file.close()
+
+	def poll( self ):
+		self.event = pygame.event.poll()
+		if self.event.type == pygame.NOEVENT:
+			return False
+		else:
+			return self.event.type
+
+	def key_press( self ):
+		if self.event.type == pygame.KEYDOWN:
+			return self.event.unicode
+		else:
+			return False
+
+	def mouse_press( self ):
+		if self.event.type == pygame.MOUSEBUTTONDOWN:
+			return self.event.button
+		else:
+			return False
+
+	def mouse_move( self ):
+		if self.event.type == pygame.MOUSEMOTION:
+			return self.event.pos
+		else:
+			return False
+
+	def mouse_position( self ):
+		return pygame.mouse.get_pos()
+
+	def mouse_coordinate( self ):
+		return self.coordinate( self.mouse_position() )
 
