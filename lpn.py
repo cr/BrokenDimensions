@@ -13,10 +13,12 @@ Y = (ymin, ymax) = (2.0, 4.0)
 
 # default window size
 # height set automatically
-window_width = 200
+window_width = 400      #  -- ( 200 )
+window_aspect = 1.6     #  -- ( 1.0 )
 
 # accuracy
-limes_precision = 0.05
+limes_precision = 0.05  #  -- ( 0.05 )
+N_min = 100
 N_max = 10000
 
 def sign( x ):
@@ -44,7 +46,7 @@ def L_exp( a, b ):
 	x_n = 0.5
 	sum = 0.0
 
-	for n in xrange( 1, N_max+1 ):
+	for n in xrange( 1, N_min ):
 		r_tmp = r( n, a, b )
 		x_n = r_tmp * x_n * ( 1 - x_n )
 		fa = math.fabs( r_tmp * ( 1 - 2*x_n ) )
@@ -55,16 +57,27 @@ def L_exp( a, b ):
 			diff = -40.0
 
 		sum += diff
-		if math.fabs( diff/n ) < limes_precision:
-			break
-
+		
+	for n in xrange( N_min, N_max ):
+	    r_tmp = r( n, a, b )
+	    x_n = r_tmp * x_n * ( 1 - x_n )
+	    fa = math.fabs( r_tmp * ( 1 - 2*x_n ) )
+	    
+	    if fa > 0:
+	        diff = math.log( fa )
+	    else:
+	        diff = -40.0
+	
+	    sum += diff
+	    if math.fabs( diff/n ) < limes_precision:
+	        break
+	
 	return sum/n
 
-
-win = window.Window( window_width, 1.0, xmin, xmax, ymin )
+win = window.Window( window_width, window_aspect, xmin, xmax, ymin )
 
 n = 0
-for (pixel, coord) in win.random():
+for (pixel, coord) in win: #.random():
 
 	e = L_exp( *coord )
 	win.plot( pixel, color(e) )
