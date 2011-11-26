@@ -3,21 +3,22 @@
 # Single best explanation: http://is.gd/cUxhMv (SPOILER ALERT!)
 
 import sys
+from time import sleep
 import math
 import tools.window as window
 
 # fractal parameters
 S = "AABAB"
-X = (xmin, xmax) = (2.0, 4.0)
-Y = (ymin, ymax) = (2.0, 4.0)
+(xmin, ymin) = (0.0, 0.0)
+(xmax, ymax) = (4.0, 4.0)
 
 # default window size
 # height set automatically
-window_width = 400      #  -- ( 200 )
-window_aspect = 1.6     #  -- ( 1.0 )
+window_width = 300      #  -- ( 200 )
+window_aspect = 1.     #  -- ( 1.0 )
 
 # accuracy
-limes_precision = 0.05  #  -- ( 0.05 )
+limes_precision = 0.01  #  -- ( 0.05 )
 N_min = 100
 N_max = 10000
 
@@ -25,10 +26,10 @@ def sign( x ):
 	return 1.0 if x>=0 else -1.0
 
 def color( x ):
-	if x > 0.75:
+	if x > 0.7:
 		return (255,255,255)
 	if x > -1.0:
-		c = int( ( x + 1.0 ) / 1.75 * 255 )
+		c = int( ( x + 1.0 ) / 1.7 * 255 )
 		return (255,c,c)
 	if x > -4.0:
 		c = int( ( x + 4.0 ) / 3.0 * 255 )
@@ -74,29 +75,26 @@ def L_exp( a, b ):
 	
 	return sum/n
 
-win = window.Window( window_width, window_aspect, xmin, xmax, ymin )
+win = window.Window( window_width, window_aspect, (xmin, ymin), (xmax, ymax) )
 
 n = 0
-for (pixel, coord) in win: #.random():
+for (pixel, coord) in win.random():
 
 	e = L_exp( *coord )
 	win.plot( pixel, color(e) )
 
-	if n%50 == 0:
+	if n%20 == 0:
+		win.update( 10.0 )
 		if win.quit():
 			sys.exit( 0 )
 
-	if pixel[0] == window_width - 1:
-		win.update()
-
-	#if n % 200 == 0:
-	#	win.update()
 	n += 1
 
-win.update()
-print "Done"
+win.update( 1000.0 )
+print >>sys.stderr, "Done"
 
 while 1:
+	sleep(0.1)
 	if win.quit():
 		break
 
