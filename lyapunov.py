@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Single best explanation: http://is.gd/cUxhMv (SPOILER ALERT!)
+# Single best explanation: http://plus.maths.org/content/extracting-beauty-chaos
 
 import sys
 from time import sleep
