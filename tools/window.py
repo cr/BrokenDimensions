@@ -3,6 +3,7 @@
 import pygame
 import random
 from time import time as unixtime
+import struct
 
 class Window( object ):
 
@@ -28,6 +29,8 @@ class Window( object ):
 		self.surface.fill( (0, 0, 0) )
 		self.update_time = unixtime()-100.0
 		self.update()
+
+		self.button_status = ( False, False, False )
 
 	def plot( self, pixel, rgb = (1.0, 1.0, 1.0) ):
 		self.surface.set_at( pixel, rgb )
@@ -65,4 +68,20 @@ class Window( object ):
 		while arr:
 			pos = int( random.random() * len( arr ) )
 			yield arr.pop( pos )
+
+	def saveBMP( self, name = '/tmp/window.bmp' ):
+		width = self.surface.get_width()
+		height = self.surface.get_height()
+
+		file = open( name, 'wb' )
+		file.write( 'BM' + struct.pack( '<QIIHHHH', width*height*3+26,26, 12, width, height, 1,24) )
+		self.surface.lock()
+
+		for y in xrange( height-1, -1, -1 ):
+			for x in xrange( width ):
+				v = self.surface.get_at( (x, y) )
+				file.write( struct.pack( 'BBB', v[2], v[1], v[0] ) )
+
+		self.surface.unlock()
+		file.close()
 

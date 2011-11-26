@@ -93,6 +93,10 @@ for (pixel, coord) in win.random():
 win.update( 1000.0 )
 print >>sys.stderr, "Done"
 
+bmp = '/tmp/lyapunov.bmp'
+win.saveBMP( bmp )
+print >>sys.stderr, 'Saved to', bmp
+
 while 1:
 	sleep(0.1)
 	if win.quit():
