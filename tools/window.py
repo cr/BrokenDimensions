@@ -2,10 +2,11 @@
 
 import pygame
 import random
+from time import time as unixtime
 
 class Window( object ):
 
-	def __init__( self, width, aspect=4.0/3.0, xmin=0.0, xmax=1.0, ymin=0.0, ymax=0.0 ):
+	def __init__( self, width, aspect=1.0, (xmin,ymin)=(0.,0.), (xmax,ymax)=(1.,1.) ):
 		"""Create window object defined by pixel width, aspect ratio.
 		You can specify a 2D interval as underlying math coordinate set.
 		"""
@@ -25,13 +26,17 @@ class Window( object ):
 		pygame.init()
 		self.surface = pygame.display.set_mode( (self.width, self.height) )
 		self.surface.fill( (0, 0, 0) )
+		self.update_time = unixtime()-100.0
+		self.update()
 
 	def plot( self, pixel, rgb = (1.0, 1.0, 1.0) ):
 		self.surface.set_at( pixel, rgb )
 
-	def update( self ):
-	    self.surface.unlock()
-	    pygame.display.flip()
+	def update( self, frequency=4.0 ):
+		if unixtime() - self.update_time > 1./frequency:
+			self.surface.unlock()
+			pygame.display.flip()
+			self.update_time = unixtime()
 
 	def coordinate( self, pixel ):
 		"""Returns math coordinates for given pixel coordinates"""
@@ -47,7 +52,7 @@ class Window( object ):
 
 	def __iter__( self ):
 		my = self.ymin
-		for py in xrange( 0, self.width ):
+		for py in xrange( 0, self.height ):
 			mx = self.xmin
 			for px in xrange( 0, self.width ):
 				yield ( (px,py), (mx,my) )
