@@ -176,21 +176,23 @@ while True:
 			state = 'quit'
 		elif key == u's':
 			bmp = '/tmp/lyapunov.bmp'
-			print >>sys.stderr, 'Saving to', bmp, '...'
+			print 'Saving to', bmp, '...'
 			win.saveBMP( bmp )
-			print >>sys.stderr, 'done.'
+			print 'done.'
 
 		mouse_button = win.mouse_press()
 		if mouse_button == 1:
 			(xmin,ymin) = win.mouse_coordinate()
-			state = 'resize'
+			print 'New (xmin,ymin):', (xmin,ymin)
+			
 		elif mouse_button == 3:
 			(xmax,ymax) = win.mouse_coordinate()
+			print 'New (xmax,ymax):', (xmax,ymax)
 			state = 'resize'
 
 		mouse_pos = win.mouse_move()
 		if mouse_pos:
-			print win.coordinate( mouse_pos )
+			print >>sys.stderr, win.coordinate( mouse_pos )
 
 		if state == 'rendering':
 			win.update( 10.0 )
