@@ -20,8 +20,8 @@ window_width = 300      #  -- ( 200 )
 window_aspect = 1.     #  -- ( 1.0 )
 
 # accuracy
-limes_precision = 0.01  #  -- ( 0.05 )
-N_min = 100
+limes_precision = 0.05  #  -- ( 0.05 )
+N_min = 30
 N_max = 10000
 
 def sign( x ):
