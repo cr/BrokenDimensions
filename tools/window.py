@@ -83,6 +83,10 @@ class Window( object ):
 		width = self.surface.get_width()
 		height = self.surface.get_height()
 
+		# fix size to be multiple of 4 ; BMP doesn't like it any other way
+		width -= width%4
+		height -= height%4
+
 		file = open( name, 'wb' )
 		file.write( 'BM' + struct.pack( '<QIIHHHH', width*height*3+26,26, 12, width, height, 1,24) )
 		self.surface.lock()
