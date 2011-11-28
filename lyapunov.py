@@ -120,6 +120,7 @@ while True:
 		if job:
 			job.finish()
 		win = window.Window( window_width, window_aspect, (xmin, ymin), (xmax, ymax) )
+		win.set_title( 'Lyapunov' )
 		state = 'render'
 	elif state == 'render':
 		job = Render( win )

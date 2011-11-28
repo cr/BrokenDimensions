@@ -25,13 +25,16 @@ class Window( object ):
 		self.ystep = float( (self.ymax-self.ymin)/self.height )
 
 		pygame.init()
-		self.surface = pygame.display.set_mode( (self.width, self.height) )
+		self.surface = pygame.display.set_mode( (self.width, self.height), pygame.constants.RESIZABLE )
 		self.surface.fill( (0, 0, 0) )
 		self.update_time = unixtime()-100.0
 		self.update()
 
 		self.button_status = ( False, False, False )
 		self.event = pygame.event.poll()
+
+	def set_title( self, title ):
+		pygame.display.set_caption( title )
 
 	def plot( self, pixel, rgb = (1.0, 1.0, 1.0) ):
 		self.surface.set_at( pixel, rgb )
