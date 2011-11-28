@@ -4,6 +4,7 @@
 
 import sys
 from time import sleep
+from time import time as unixtime
 import math
 import tools.window as window
 from threading import Thread
@@ -176,7 +177,7 @@ while True:
 		elif key == u'q':
 			state = 'quit'
 		elif key == u's':
-			bmp = '/tmp/lyapunov.bmp'
+			bmp = '/tmp/lyapunov-' + str( unixtime() ) + '.bmp'
 			print 'Saving to', bmp, '...'
 			win.saveBMP( bmp )
 			print 'done.'

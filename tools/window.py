@@ -43,6 +43,8 @@ class Window( object ):
 		if unixtime() - self.update_time > 1./frequency:
 			self.surface.unlock()
 			pygame.display.flip()
+			#pygame.display.update()
+			pygame.display.set_icon( self.surface )
 			self.update_time = unixtime()
 
 	def coordinate( self, pixel ):
@@ -82,7 +84,7 @@ class Window( object ):
 
 		self.surface.unlock()
 
-	def saveBMP( self, name = '/tmp/window.bmp' ):
+	def saveBMP( self, name = '/tmp/window-' + str( unixtime() ) + '.bmp' ):
 		width = self.surface.get_width()
 		height = self.surface.get_height()
 
