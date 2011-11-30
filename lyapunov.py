@@ -40,6 +40,33 @@ def color( x ):
 	else:
 		return (0,0,0)
 
+def color2( x ):
+	T = 0.7 - x + 1.0
+	if T < 1.0:
+		T = 1.0
+	T = 1.0 - 1.0 / T
+	T = (T*0.92)**.15
+	R = int(T*255**(1-T**45*2))
+	G = int(T*70-880*T**18+701*T**9)
+	B = int(T*80+T**9*255-950*T**99)
+	R = 0 if R<0 else R
+	R = 255 if R>255 else R
+	G = 0 if G<0 else G
+	G = 255 if G>255 else G
+	B = 0 if B<0 else B
+	B = 255 if B>255 else B
+	return (R,G,B)
+
+def color3( x ):
+	T = 0.7 - x + 1.0
+	if T < 1.0:
+		T = 1.0
+	T = 1.0 - 1.0 / T
+	T = int( T*255 )
+	T = 0 if T<0 else T
+	T = 255 if T>255 else T
+	return (T,T,T)
+
 def r( n, a, b ):
 	if S[n % len(S)] == 'A':
 		return a
@@ -99,7 +126,7 @@ class Render( Thread ):
 	def render_window( self ):
 		for (pixel, coord) in self.window if not render_random else self.window.random():
 			e = L_exp( *coord )
-			self.window.plot( pixel, color(e) )
+			self.window.plot( pixel, color2(e) )
 			if self._stop:
 				return
 
