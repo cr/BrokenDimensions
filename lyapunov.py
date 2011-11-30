@@ -28,7 +28,7 @@ N_max = 10000
 def sign( x ):
 	return 1.0 if x>=0 else -1.0
 
-def color( x ):
+def color_linear_red_white( x ):
 	if x > 0.7:
 		return (255,255,255)
 	if x > -1.0:
@@ -40,7 +40,7 @@ def color( x ):
 	else:
 		return (0,0,0)
 
-def color2( x ):
+def color_exponential_red_white_blue( x ):
 	T = 0.7 - x + 1.0
 	if T < 1.0:
 		T = 1.0
@@ -57,15 +57,21 @@ def color2( x ):
 	B = 255 if B>255 else B
 	return (R,G,B)
 
-def color3( x ):
+def color_plain_exponent( x ):
 	T = 0.7 - x + 1.0
 	if T < 1.0:
 		T = 1.0
-	T = 1.0 - 1.0 / T
+	T = 1.0 / T
 	T = int( T*255 )
 	T = 0 if T<0 else T
 	T = 255 if T>255 else T
 	return (T,T,T)
+
+color_schemes = [
+	color_exponential_red_white_blue,
+	color_linear_red_white,
+	color_plain_exponent,
+]
 
 def r( n, a, b ):
 	if S[n % len(S)] == 'A':
@@ -126,7 +132,7 @@ class Render( Thread ):
 	def render_window( self ):
 		for (pixel, coord) in self.window if not render_random else self.window.random():
 			e = L_exp( *coord )
-			self.window.plot( pixel, color2(e) )
+			self.window.plot( pixel, color_schemes[color_scheme](e) )
 			if self._stop:
 				return
 
@@ -141,6 +147,7 @@ render_random = True
 state = 'resize'
 win = False
 job = False
+color_scheme = 0
 
 while True:
 
@@ -172,30 +179,34 @@ while True:
 			state = 'quit'
 
 		key = win.key_press()
-		if key == u'e':
+		if key == u'c':
+			color_scheme = (color_scheme + 1) % len(color_schemes)
+			print 'Using color scheme', color_scheme
+			state = 'resize'
+		elif key == u'e':
 			limes_precision /= 1.1
 			print 'limes precision:', limes_precision
 			state = 'resize'
-		if key == u'E':
+		elif key == u'E':
 			limes_precision *= 1.1
 			print 'limes precision:', limes_precision
 			state = 'resize'
-		if key == u'n':
+		elif key == u'n':
 			N_min -= 1
 			print 'N min:', N_min
 			state = 'resize'
-		if key == u'N':
+		elif key == u'N':
 			N_min +=1
 			print 'N min:', N_min
 			state = 'resize'
-		if key == u'r':
+		elif key == u'r':
 			render_random = not render_random
 			state = 'resize'
-		if key == u'a':
+		elif key == u'a':
 			(xmin, ymin) = (0.0, 0.0)
 			(xmax, ymax) = (4.0, 4.0)
 			state = 'resize'
-		if key == u'+':
+		elif key == u'+':
 			window_width *= 1.1
 			state = 'resize'
 		elif key == u'-':
