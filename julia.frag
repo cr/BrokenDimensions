@@ -4,6 +4,16 @@
     uniform float MyIter;
     varying vec4 MyCoord4f;
 
+    float hue2rgb( float p, float q, float t ) {
+
+        if( t < 0.0 ) t += 1.0;
+        if( t > 1.0 ) t -= 1.0;
+        if( t < 1.0/6.0 ) return p + (q - p) * 6.0 * t;
+        if( t < 1.0/2.0 ) return q;
+        if( t < 2.0/3.0 ) return p + (q - p) * (2.0/3.0 - t) * 6.0;
+        return p;
+    }
+
     void main() {
 
         vec2 z, c;
@@ -67,15 +77,4 @@
 
         // gl_FragColor = vec4( R, G, B, 1.0 );
 
-    }
-
-
-    float hue2rgb( float p, float q, float t ) {
-
-        if( t < 0.0 ) t += 1.0;
-        if( t > 1.0 ) t -= 1.0;
-        if( t < 1.0/6.0 ) return p + (q - p) * 6.0 * t;
-        if( t < 1.0/2.0 ) return q;
-        if( t < 2.0/3.0 ) return p + (q - p) * (2.0/3.0 - t) * 6.0;
-        return p;
     }
