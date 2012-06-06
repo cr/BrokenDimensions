@@ -10,6 +10,17 @@ import tools.window as window
 from threading import Thread
 import signal
 
+
+try:
+	import pycuda.gpuarray as gpuarray
+	import pycuda.driver as cuda
+	import pycuda.autoinit
+	import numpy
+	pycuda_loaded = True 
+except ImportError: 
+	pycuda_loaded = False 
+
+
 # fractal parameters
 S = "AABAB"
 (xmin, ymin) = (0.0, 0.0)

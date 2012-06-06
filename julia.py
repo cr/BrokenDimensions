@@ -6,6 +6,7 @@
 
 from context import *
 from time import time
+from math import sin, pi
 
 class Julia ( Context ):
 
@@ -39,7 +40,12 @@ class Julia ( Context ):
 
 	def display ( self ):
 
-		if self.auto: self.iter += ( time() - self.t0 ) / self.delay
+		now = time() - self.t0
+
+		MyTime = glGetUniformLocation( self.shader, "MyTime" )
+		glUniform1f( MyTime, now )
+
+		if self.auto: self.iter += now / self.delay
 
 		# pass variables to shaders
 		MyIter = glGetUniformLocation( self.shader, "MyIter" )

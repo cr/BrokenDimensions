@@ -1,5 +1,6 @@
 
 	uniform float MyIter;
+	uniform float MyTime;
 	varying vec4 MyCoord4f;
 
 	void main() {

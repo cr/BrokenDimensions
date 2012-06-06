@@ -2,6 +2,7 @@
     // precision highp float;
     
     uniform float MyIter;
+    uniform float MyTime;
     varying vec4 MyCoord4f;
 
     float hue2rgb( float p, float q, float t ) {
@@ -19,13 +20,22 @@
         vec2 z, c;
 
         // chose b/w mandelbrot and julia set
-        // c.x = MyCoord4f.x;
-        // c.y = MyCoord4f.y;
+
+        //c.x = MyCoord4f.x;
+        //c.y = MyCoord4f.y;
         c.x = 0.3;
         c.y = 0.0;
 
         z.x = MyCoord4f.x;
         z.y = MyCoord4f.y;
+
+        float wobble = 1.0+sin(length(MyCoord4f)*10.0+MyTime*6.0)*0.03;
+
+        //funny accident, looks great with julia
+        //float wobble = 1.0+sin(length(c)*10.0+MyTime*6.0)*0.03;
+
+        c *= wobble;
+        z *= wobble;
 
         float i = 0.0;
         while( i < MyIter ) {

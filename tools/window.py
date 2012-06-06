@@ -25,7 +25,8 @@ class Window( object ):
 		self.ystep = float( (self.ymax-self.ymin)/self.height )
 
 		pygame.init()
-		self.surface = pygame.display.set_mode( (self.width, self.height), pygame.constants.RESIZABLE )
+		#self.surface = pygame.display.set_mode( (self.width, self.height), pygame.constants.RESIZABLE )
+		self.surface = pygame.display.set_mode( (self.width, self.height) )
 		self.surface.fill( (0, 0, 0) )
 		self.update_time = unixtime()-100.0
 		self.update()
